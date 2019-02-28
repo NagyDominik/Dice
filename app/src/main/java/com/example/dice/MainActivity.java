@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         btnRoll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                rollDice();
+
             }
         });
 
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void rollDice() {
+    /*private void rollDice() {
         switch (num) {
             case 1: iv.setImageResource(R.drawable.one);
                 break;
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             case 6: iv.setImageResource(R.drawable.six);
                 break;
         }
-    }
+    }*/
 
     private void createDice(int num) {
         ll_Layout.removeAllViews();
