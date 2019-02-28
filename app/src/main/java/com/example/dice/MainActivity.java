@@ -4,23 +4,20 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.NumberPicker;
+
 import java.util.ArrayList;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btnRoll, btnClear;
-    ImageView ivDice1, ivDice2;
-    LinearLayout lLayout;
-    ListView lvLog;
-    ArrayAdapter adapter;
+    Button btnRoll;
+    LinearLayout ll_Layout;
+    NumberPicker numPicker;
     ArrayList<String> history = new ArrayList<>();
 
     @Override
@@ -28,17 +25,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btnRoll = findViewById(R.id.btnRoll);
-        btnClear = findViewById(R.id.btnClear);
-        ivDice1 = findViewById(R.id.ivDice1);
-        ivDice2 = findViewById(R.id.ivDice2);
-        lvLog = findViewById(R.id.lvLog);
+        ll_Layout = findViewById(R.id.ll_layout);
+        numPicker = findViewById(R.id.numPicker);
+        numPicker.setMinValue(1);
+        numPicker.setMaxValue(6);
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, history);
-        lvLog.setAdapter(adapter);
-
-        if (savedInstanceState != null && savedInstanceState.containsKey("HISTORY")) {
-            history.addAll(savedInstanceState.getStringArrayList("HISTORY"));
-            lvLog.setSelectionFromTop(savedInstanceState.getInt("SCROLL_POS"), 0);
+        if (savedInstanceState != null && savedInstanceState.containsKey("NUMPICKER_VAL")) {
+            numPicker.setValue(savedInstanceState.getInt("NUMPICKER_VAL"));
+            createDice(numPicker.getValue());
             Log.d("DEBUGLOG","value of count restored");
         }
         else {
@@ -52,8 +46,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle state)
     {
         super.onSaveInstanceState(state);
-        state.putStringArrayList("HISTORY", history);
-        state.putInt("SCROLL_POS", lvLog.getFirstVisiblePosition());
+        state.putInt("NUMPICKER_VAL", numPicker.getValue());
         Log.d("DEBUGLOG","Backup...");
     }
 
@@ -65,20 +58,16 @@ public class MainActivity extends AppCompatActivity {
                 Random rnd = new Random();
                 int rnd_num = rnd.nextInt(6) + 1;
                 log += "Dice: " + rnd_num + ", ";
-                rollDice(rnd_num, ivDice1);
                 rnd_num = rnd.nextInt(6) + 1;
                 log += rnd_num;
-                rollDice(rnd_num, ivDice2);
-                history.add(0, log);
-                adapter.notifyDataSetChanged();
+
             }
         });
 
-        btnClear.setOnClickListener(new View.OnClickListener() {
+        numPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
-            public void onClick(View v) {
-                history.clear();
-                adapter.clear();
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                createDice(newVal);
             }
         });
     }
@@ -100,14 +89,32 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private TextView createTextView(String txt) {
-        LayoutParams lparams = new LayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        TextView tv = new TextView(this);
-        tv.setLayoutParams(lparams);
-        tv.setText(txt);
-        tv.setTextSize(18);
-        return tv;
+    private void createDice(int num) {
+        ll_Layout.removeAllViews();
+        int currentLayoutNum = 0;
+        LinearLayout currentLayout = new LinearLayout(this);
+        for (int i = 0; i < num; i++) {
+            if (i % 3 == 0) {
+                if (currentLayoutNum < (i / 3)) {
+                    currentLayoutNum = (i / 3);
+                }
+                LinearLayout layoutNew = new LinearLayout(this);
+                layoutNew.setOrientation(LinearLayout.HORIZONTAL);
+                layoutNew.setTag("LinearLayout_" + currentLayoutNum);
+                currentLayout = layoutNew;
+                ll_Layout.addView(currentLayout);
+                Log.d("DEBUG", "LAYOUT CREATED");
+            }
+            ImageView iv = new ImageView(this);
+            iv.setImageResource(R.drawable.one);
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            iv.setLayoutParams(params);
+            iv.setPadding(20,20,20,20);
+            iv.getLayoutParams().height = 345;
+            iv.getLayoutParams().width = 345;
+            iv.setTag("ImageView_" + i);
+            currentLayout.addView(iv);
+        }
     }
 
 }
