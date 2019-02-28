@@ -4,19 +4,18 @@ import java.io.Serializable;
 
 public class BEDiceRoll implements Serializable {
 
-    private int m_roll;
     private String m_date;
+    private int[] m_rolls;
 
-    public BEDiceRoll(int roll, String date) {
-        this.m_roll = roll;
+    public BEDiceRoll(String date) {
         this.m_date = date;
     }
 
     public BEDiceRoll() {
     }
 
-    public int getM_roll() {
-        return m_roll;
+    public int[] getM_roll() {
+        return m_rolls;
     }
 
     public String getM_date() {

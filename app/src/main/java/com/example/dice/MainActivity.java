@@ -1,8 +1,10 @@
 package com.example.dice;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -10,21 +12,24 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 
+import com.example.dice.Model.BEDiceRoll;
+
 import java.util.ArrayList;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btnRoll;
+    Button btnRoll, btnHistory;
     LinearLayout ll_Layout;
     NumberPicker numPicker;
-    ArrayList<String> history = new ArrayList<>();
+    ArrayList<BEDiceRoll> history = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btnRoll = findViewById(R.id.btnRoll);
+        btnHistory = findViewById(R.id.btn_History);
         ll_Layout = findViewById(R.id.ll_layout);
         numPicker = findViewById(R.id.numPicker);
         numPicker.setMinValue(1);
@@ -54,13 +59,18 @@ public class MainActivity extends AppCompatActivity {
         btnRoll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String log = "";
-                Random rnd = new Random();
-                int rnd_num = rnd.nextInt(6) + 1;
-                log += "Dice: " + rnd_num + ", ";
-                rnd_num = rnd.nextInt(6) + 1;
-                log += rnd_num;
+                rollDice();
+            }
+        });
 
+        btnHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent x = new Intent(MainActivity.this, HistoryActivity.class);
+                Log.d("DEBUGLOG", "Detail activity will be started");;
+                x.putExtra("rolls", history);
+                startActivity(x);
+                Log.d("DEBUGLOG", "Detail activity is started");
             }
         });
 
@@ -72,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void rollDice(int num, ImageView iv) {
+    private void rollDice() {
         switch (num) {
             case 1: iv.setImageResource(R.drawable.one);
                 break;
@@ -101,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayout layoutNew = new LinearLayout(this);
                 layoutNew.setOrientation(LinearLayout.HORIZONTAL);
                 layoutNew.setTag("LinearLayout_" + currentLayoutNum);
+                layoutNew.setGravity(Gravity.CENTER);
                 currentLayout = layoutNew;
                 ll_Layout.addView(currentLayout);
                 Log.d("DEBUG", "LAYOUT CREATED");
