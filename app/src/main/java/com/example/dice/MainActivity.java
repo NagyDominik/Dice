@@ -43,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
         numPicker.setMaxValue(6);
 
         if (savedInstanceState != null && savedInstanceState.containsKey("NUMPICKER_VAL")) {
+            if (savedInstanceState.containsKey("HistoryList")) {
+                history = (ArrayList<BEDiceRoll>) savedInstanceState.getSerializable("HistoryList");
+            }
             numPicker.setValue(savedInstanceState.getInt("NUMPICKER_VAL"));
             createDice(numPicker.getValue());
             Log.d("DEBUGLOG","value of count restored");
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onSaveInstanceState(state);
         state.putInt("NUMPICKER_VAL", numPicker.getValue());
+        state.putSerializable("HistoryList", this.history);
         Log.d("DEBUGLOG","Backup...");
     }
 

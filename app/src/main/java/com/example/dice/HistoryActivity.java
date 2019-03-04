@@ -1,14 +1,11 @@
 package com.example.dice;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +20,7 @@ import com.example.dice.Model.BEDiceRoll;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
-import java.util.Random;
-
-import static java.lang.String.format;
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -124,12 +116,13 @@ public class HistoryActivity extends AppCompatActivity {
         }
 
         public void createNewLine(BEDiceRoll roll, LinearLayout layout) {
-            for (int i = 0; i < roll.getM_roll().size(); i++) {
-                ImageView iv = rollDiceConverter(roll.getM_roll().get(i));
-                iv.setTag("iv_" + i);
-                layout.addView(iv);
+            if (layout.getChildCount() == 0) {
+                for (int i = 0; i < roll.getM_roll().size(); i++) {
+                    ImageView iv = rollDiceConverter(roll.getM_roll().get(i));
+                    iv.setTag("iv_" + i);
+                    layout.addView(iv);
+                }
             }
-            Log.d("qwe", roll.getM_roll().size() + "");
         }
 
 
@@ -144,24 +137,30 @@ public class HistoryActivity extends AppCompatActivity {
 
             } else
                 Log.d("LIST", "Position: " + position + " View Reused");
+
             BEDiceRoll dice = history.get(position);
 
             TextView date = view.findViewById(R.id.date);
             LinearLayout linearLayout = view.findViewById(R.id.linearLine);
 
-            /*date.setGravity(Gravity.CENTER_VERTICAL);
-            linearLayout.setGravity(Gravity.CENTER_VERTICAL);*/
-
             view.setBackgroundColor(colours[position % colours.length]);
 
             createNewLine(dice,linearLayout);
 
-            Log.d("asd", dice.getM_date());
             date.setText(dice.getM_date());
 
             return view;
         }
 
+        @Override
+        public int getViewTypeCount() {
+            return history.size();
+        }
 
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
     }
 }
