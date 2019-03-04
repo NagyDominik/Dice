@@ -1,7 +1,9 @@
 package com.example.dice;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -15,6 +17,8 @@ import android.widget.NumberPicker;
 import com.example.dice.Model.BEDiceRoll;
 
 import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
@@ -25,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout ll_Layout;
     NumberPicker numPicker;
     ArrayList<BEDiceRoll> history = new ArrayList<>();
+    SimpleDateFormat format = new SimpleDateFormat("kk:mm:ss");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +75,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent x = new Intent(MainActivity.this, HistoryActivity.class);
-                Log.d("DEBUGLOG", "Detail activity will be started");;
+                Log.d("DEBUGLOG", "Detail activity will be started");
                 x.putExtra("rolls", history);
-                startActivity(x);
+                startActivityForResult(x,1);
+
                 Log.d("DEBUGLOG", "Detail activity is started");
             }
         });
@@ -83,6 +89,15 @@ public class MainActivity extends AppCompatActivity {
                 createDice(newVal);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == 1){
+            if(resultCode == 2){
+                history.clear();
+            }
+        }
     }
 
     private ArrayList<ImageView> getDiceList() {
@@ -102,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
     private BEDiceRoll rollDice(ArrayList<ImageView> diceList) {
         BEDiceRoll roll = new BEDiceRoll();
-        roll.setM_date(Calendar.getInstance().getTime().toString());
+        roll.setM_date(format.format(Calendar.getInstance().getTime()));
         Log.d("DEBUGLOG", roll.getM_date());
         for (int i = 0; i < diceList.size(); i++) {
             Random rnd = new Random();
