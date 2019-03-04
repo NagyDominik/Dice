@@ -6,4 +6,7 @@
     <string name="clear">Clear</string>
     <string name="dice">Dice</string>
     <string name="back">Back</string>
+    <string name="description">Description</string>
+    <string name="description2">Description2</string>
+
 </resources>
